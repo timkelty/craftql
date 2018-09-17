@@ -32,11 +32,39 @@ class VolumeInterface extends InterfaceBuilder {
         $focalPoint = $this->createObjectType('AssetFocalPoint');
         $focalPoint->addFloatField('x');
         $focalPoint->addFloatField('y');
+        $focalPoint->addFloatField('left');
+        $focalPoint->addFloatField('top');
+        $focalPoint->addFloatField('right');
+        $focalPoint->addFloatField('bottom');
+        $focalPoint->addStringField('coords');
 
         $this->addField('focalPoint')
             ->type($focalPoint)
             ->resolve(function ($root, $args) {
-                return $root->getFocalPoint();
+                $focalPoint = $root->getFocalPoint();
+
+                if (!$focalPoint) {
+                    return null;
+                }
+
+                $values = array_map('intval', array_merge($focalPoint, [
+                    'left' => $focalPoint['x'] * $root->width - 1,
+                    'top' => $focalPoint['y'] * $root->height - 1,
+                    'right' => $focalPoint['x'] * $root->width + 1,
+                    'bottom' => $focalPoint['y'] * $root->height+ 1,
+                ]));
+
+                $values['coords'] = implode('', [
+                    $values['left'],
+                    'x',
+                    $values['top'],
+                    ':',
+                    $values['right'],
+                    'x',
+                    $values['bottom'],
+                ]);
+
+                return $values;
             });
     }
 
