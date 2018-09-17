@@ -29,6 +29,15 @@ class VolumeInterface extends InterfaceBuilder {
         $this->addDateField('dateUpdatedTimestamp');
         $this->addDateField('dateUpdated');
 
+        $this->addStringField('path')
+            ->resolve(function ($root, $args) {
+                if (!$root->volume->subfolder) {
+                    return $root->path;
+                }
+
+                return rtrim($root->volume->subfolder, '/') . '/' . $root->path;
+            });
+
         $focalPoint = $this->createObjectType('AssetFocalPoint');
         $focalPoint->addFloatField('x');
         $focalPoint->addFloatField('y');
