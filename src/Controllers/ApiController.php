@@ -116,6 +116,10 @@ class ApiController extends Controller
         $schema = $this->graphQl->getSchema($token);
         Craft::trace('CraftQL: Schema built');
 
+        if (CraftQL::getInstance()->getSettings()->logQueries) {
+            Craft::info('CraftQL: Logging query: ' . json_encode($input));
+        }
+
         Craft::trace('CraftQL: Executing query');
         $result = $this->graphQl->execute($schema, $input, $variables);
         Craft::trace('CraftQL: Execution complete');

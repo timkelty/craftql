@@ -13,7 +13,8 @@ class Settings extends Model
     public $headers = [];
     public $maxQueryDepth = false;
     public $maxQueryComplexity = false;
-
+    public $logQueries = false;
+    
     function rules()
     {
         return [
