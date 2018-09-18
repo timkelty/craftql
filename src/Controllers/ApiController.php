@@ -117,7 +117,7 @@ class ApiController extends Controller
         Craft::trace('CraftQL: Schema built');
 
         if (CraftQL::getInstance()->getSettings()->logQueries) {
-            Craft::info('CraftQL: Logging query: ' . json_encode($input));
+            Craft::warning('CraftQL: Logging query: ' . json_encode($input));
         }
 
         Craft::trace('CraftQL: Executing query');
