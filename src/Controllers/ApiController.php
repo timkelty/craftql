@@ -112,8 +112,15 @@ class ApiController extends Controller
         }
         Craft::trace('CraftQL: Parsing request complete');
 
-        $cacheKey = [$input, $variables];
+        $cacheKey = [
+            'input' => $input,
+            'variables' => $variables
+        ];
         $result = false;
+
+        if (CraftQL::getInstance()->getSettings()->logQueries) {
+            Craft::info('CraftQL: Logging query: ' . json_encode($cacheKey));
+        }
 
         if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
             Craft::trace('CraftQL: Retrieving cached result');
