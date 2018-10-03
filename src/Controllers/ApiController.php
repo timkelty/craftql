@@ -118,11 +118,6 @@ class ApiController extends Controller
         ];
         $result = false;
 
-        if (CraftQL::getInstance()->getSettings()->logQueries) {
-            Craft::warning('CraftQL: Logging surrogate key: ' . Craft::$app->request->headers->get('Surrogate-Key'));
-            Craft::warning('CraftQL: Logging query: ' . json_encode($cacheKey));
-        }
-
         if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
             Craft::trace('CraftQL: Retrieving cached result');
             $result = Craft::$app->getCache()->get($cacheKey);
@@ -140,6 +135,11 @@ class ApiController extends Controller
             Craft::trace('CraftQL: Executing query');
             $result = $this->graphQl->execute($schema, $input, $variables);
             Craft::trace('CraftQL: Execution complete');
+
+            if (CraftQL::getInstance()->getSettings()->logQueries) {
+                Craft::warning('CraftQL: Logging surrogate key: ' . Craft::$app->request->headers->get('Surrogate-Key'));
+                Craft::warning('CraftQL: Logging query: ' . json_encode($cacheKey));
+            }
 
             if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
                 Craft::trace('CraftQL: Caching result');
