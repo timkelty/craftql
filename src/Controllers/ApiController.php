@@ -119,8 +119,8 @@ class ApiController extends Controller
         $result = false;
 
         if (CraftQL::getInstance()->getSettings()->logQueries) {
-            Craft::info('CraftQL: Logging surrogate key: ' . Craft::$app->request->headers->get('Surrogate-Key'));
-            Craft::info('CraftQL: Logging query: ' . json_encode($cacheKey));
+            Craft::warning('CraftQL: Logging surrogate key: ' . Craft::$app->request->headers->get('Surrogate-Key'));
+            Craft::warning('CraftQL: Logging query: ' . json_encode($cacheKey));
         }
 
         if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
