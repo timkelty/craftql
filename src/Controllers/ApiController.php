@@ -116,6 +116,14 @@ class ApiController extends Controller
             'input' => $input,
             'variables' => $variables
         ];
+
+        $cacheDependency = new \yii\caching\TagDependency([
+            'tags' => array_merge(
+                ['CraftQL', 'CraftQLResponse'],
+                explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
+            ),
+        ]);
+
         $result = false;
 
         if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
@@ -143,7 +151,12 @@ class ApiController extends Controller
 
             if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
                 Craft::trace('CraftQL: Caching result');
-                Craft::$app->getCache()->set($cacheKey, $result, CraftQL::getInstance()->getSettings()->cacheDuration);
+                Craft::$app->getCache()->set(
+                    $cacheKey,
+                    $result,
+                    CraftQL::getInstance()->getSettings()->cacheDuration,
+                    $cacheDependency
+                );
             }
         } elseif (CraftQL::getInstance()->getSettings()->cacheEnabled) {
             Craft::trace('CraftQL: Cached result retrieved');
