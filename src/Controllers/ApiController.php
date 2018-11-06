@@ -117,11 +117,19 @@ class ApiController extends Controller
             'variables' => $variables
         ];
 
+        $tags = array_merge(
+            ['CraftQL', 'CraftQLResponse'],
+            explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
+        );
+
+        if (count($variables)) {
+            $tags = array_merge($tags, array_map(function($key, $val) {
+                return $key.':'.$val;
+            }, array_keys($variables), $variables));
+        }
+
         $cacheDependency = new \yii\caching\TagDependency([
-            'tags' => array_merge(
-                ['CraftQL', 'CraftQLResponse'],
-                explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
-            ),
+            'tags' => $tags,
         ]);
 
         $result = false;
@@ -145,7 +153,7 @@ class ApiController extends Controller
             Craft::trace('CraftQL: Execution complete');
 
             if (CraftQL::getInstance()->getSettings()->logQueries) {
-                Craft::warning('CraftQL: Logging surrogate key: ' . Craft::$app->request->headers->get('Surrogate-Key'));
+                Craft::warning('CraftQL: Logging cache tags: ' . json_encode($tags));
                 Craft::warning('CraftQL: Logging query: ' . json_encode($cacheKey));
             }
 
