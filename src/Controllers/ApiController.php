@@ -124,12 +124,15 @@ class ApiController extends Controller
 
         if (is_array($variables)) {
             $tags = array_merge($tags, array_map(function($key, $val) {
-                return $key.':'.json_encode($val);
+                if (!is_scalar($val)) {
+                    return null;
+                }
+                return $key.':'.$val;
             }, array_keys($variables), $variables));
         }
 
         $cacheDependency = new \yii\caching\TagDependency([
-            'tags' => $tags,
+            'tags' => array_filter($tags),
         ]);
 
         $result = false;
