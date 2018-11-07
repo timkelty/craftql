@@ -122,7 +122,7 @@ class ApiController extends Controller
             explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
         );
 
-        if (count($variables)) {
+        if (is_array($variables)) {
             $tags = array_merge($tags, array_map(function($key, $val) {
                 return $key.':'.$val;
             }, array_keys($variables), $variables));
