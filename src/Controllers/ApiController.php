@@ -124,7 +124,7 @@ class ApiController extends Controller
 
         if (is_array($variables)) {
             $tags = array_merge($tags, array_map(function($key, $val) {
-                return $key.':'.$val;
+                return $key.':'.json_encode($val);
             }, array_keys($variables), $variables));
         }
 
