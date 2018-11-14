@@ -122,15 +122,6 @@ class ApiController extends Controller
             explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
         );
 
-        if (is_array($variables)) {
-            $tags = array_merge($tags, array_map(function($key, $val) {
-                if (!is_scalar($val)) {
-                    return null;
-                }
-                return $key.':'.$val;
-            }, array_keys($variables), $variables));
-        }
-
         $cacheDependency = new \yii\caching\TagDependency([
             'tags' => array_filter($tags),
         ]);
