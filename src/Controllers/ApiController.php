@@ -147,8 +147,11 @@ class ApiController extends Controller
             Craft::trace('CraftQL: Execution complete');
 
             if (CraftQL::getInstance()->getSettings()->logQueries) {
-                Craft::warning('CraftQL: Logging cache tags: ' . json_encode($tags));
                 Craft::warning('CraftQL: Logging query: ' . json_encode($cacheKey));
+            }
+
+            if (CraftQL::getInstance()->getSettings()->logCacheTags) {
+                Craft::warning('CraftQL: Setting cache tags: ' . json_encode($tags));
             }
 
             if (CraftQL::getInstance()->getSettings()->cacheEnabled) {

@@ -18,6 +18,7 @@ class Settings extends Model
     public $cacheEnabled = false;
     public $cacheDuration = null;
     public $logQueries = false;
+    public $logCacheTags = false;
 
     function rules()
     {

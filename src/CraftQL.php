@@ -90,6 +90,15 @@ class CraftQL extends Plugin
         return parent::getSettings();
     }
 
+    public function invalidateCache($tags)
+    {
+        if ($this->getSettings()->logCacheTags) {
+            Craft::warning('CraftQL: Clearing cache tags: ' . json_encode($tags));
+        }
+
+        \yii\caching\TagDependency::invalidate(Craft::$app->getCache(), $tags);
+    }
+
     /**
      * Settings Model
      *
