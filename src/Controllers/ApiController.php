@@ -117,18 +117,21 @@ class ApiController extends Controller
             'variables' => $variables
         ];
 
-        $tags = array_merge(
+        $tags = array_filter(array_merge(
             ['CraftQL', 'CraftQLResponse'],
             explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
-        );
-
-        $cacheDependency = new \yii\caching\TagDependency([
-            'tags' => array_filter($tags),
-        ]);
+        ));
 
         $result = false;
+        $cacheEnabled = CraftQL::getInstance()->getSettings()->cacheEnabled;
+        $cacheDuration = CraftQL::getInstance()->getSettings()->cacheDuration;
 
-        if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
+        // Short cache for search results
+        if (in_array('search-results', $tags)) {
+            $cacheDuration = 60*5;
+        }
+
+        if ($cacheEnabled) {
             Craft::trace('CraftQL: Retrieving cached result');
             $result = Craft::$app->getCache()->get($cacheKey);
         }
@@ -154,16 +157,19 @@ class ApiController extends Controller
                 Craft::warning('CraftQL: Setting cache tags: ' . json_encode($tags));
             }
 
-            if (CraftQL::getInstance()->getSettings()->cacheEnabled) {
+            if ($cacheEnabled) {
+
                 Craft::trace('CraftQL: Caching result');
                 Craft::$app->getCache()->set(
                     $cacheKey,
                     $result,
-                    CraftQL::getInstance()->getSettings()->cacheDuration,
-                    $cacheDependency
+                    $cacheDuration,
+                    new \yii\caching\TagDependency([
+                        'tags' => $tags,
+                    ])
                 );
             }
-        } elseif (CraftQL::getInstance()->getSettings()->cacheEnabled) {
+        } elseif ($cacheEnabled) {
             Craft::trace('CraftQL: Cached result retrieved');
         }
 
