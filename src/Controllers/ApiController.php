@@ -117,10 +117,10 @@ class ApiController extends Controller
             'variables' => $variables
         ];
 
-        $tags = array_filter(array_merge(
+        $tags = array_values(array_filter(array_merge(
             ['CraftQL', 'CraftQLResponse'],
             explode(' ', Craft::$app->request->headers->get('Surrogate-Key'))
-        ));
+        )));
 
         $result = false;
         $cacheEnabled = CraftQL::getInstance()->getSettings()->cacheEnabled;
