@@ -130,6 +130,10 @@ class ApiController extends Controller
         if (in_array('search-results', $tags)) {
             $cacheDuration = 60*5;
         }
+        
+        if (in_array('uri:undefined', $tags)) {
+            $cacheEnabled = false;
+        }
 
         if ($cacheEnabled) {
             Craft::trace('CraftQL: Retrieving cached result');
