@@ -19,6 +19,7 @@ class Settings extends Model
     public $cacheDuration = null;
     public $logQueries = false;
     public $logCacheTags = false;
+    public $throwSchemaBuildErrors = false;
 
     function rules()
     {
